@@ -1,6 +1,13 @@
 import os
-def get_file_content(working_directory, file_path):
-    abs_file_path = os.path.abspath(file_path)
+
+def get_file_content(working_directory, file_path=None):
+
+    if file_path == None:
+        return "Error: no file inputed"
+    else:
+        full_file_path = os.path.join(working_directory, file_path)
+
+    abs_file_path = os.path.abspath(full_file_path)
     abs_working_dir = os.path.abspath(working_directory)
 
     if abs_file_path.startswith(abs_working_dir):
@@ -20,5 +27,3 @@ def get_file_content(working_directory, file_path):
     else:
         return f"Error: Cannot list \"{file_path}\" as it is outside the permitted working directory"
     
-test = get_file_content('/mnt/d/code/bootdev/ai agent/functions', 'apple.txt')
-print(test)
