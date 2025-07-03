@@ -33,6 +33,3 @@ def get_files_info(working_directory, directory=None):
     
     else:
         return f"Error: Cannot list \"{file_path}\" as it is outside the permitted working directory"
-
-#get_files_info('/mnt/d/code/bootdev/ai agent/functions')
-#get_files_info('/mnt/d/code/bootdev/ai agent/calculator', 'fran')
