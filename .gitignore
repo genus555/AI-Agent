@@ -11,3 +11,6 @@ wheels/
 
 #Google Gemini AI Api Key
 .env
+
+
+tests.py
