@@ -8,6 +8,7 @@ from functions.get_files_info import schema_get_files_info
 from functions.get_file_content import schema_get_file_content
 from functions.run_python_file import schema_run_python_file
 from functions.write_file import schema_write_file
+from functions.call_function import call_function
 
 load_dotenv()
 api_key = os.environ.get("GEMINI_API_KEY")
@@ -76,7 +77,18 @@ All paths you provide should be relative to the working directory. You do not ne
     
     else:
         for function_call in response.function_calls:
-            print(f"Calling function: {function_call.name}({function_call.args})")
+            try:
+                
+                function_call_results = call_function(function_call)
+                
+                if verbose_mode:
+                    print(f"-> {function_call_results.parts[0].function_response.response}")
+                
+                else:
+                    print(function_call_results.parts[0].function_response.response['result'])
+
+            except Exception as e:
+                print(f"Something went wrong: {e}")
 
 if __name__ == "__main__":
     main()
