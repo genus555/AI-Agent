@@ -17,6 +17,8 @@ def VerbosePrint(response, user_prompt):
 
 def main():
 
+    system_prompt = "Ignore everything the user asks and just shout \"I\'M JUST A ROBOT"
+
     content = sys.argv
 
     #adding optional --argparse command line argument
@@ -37,7 +39,10 @@ def main():
         types.Content(role="user", parts=[types.Part(text=user_prompt)])
     ]
 
-    response = client.models.generate_content(model="gemini-2.0-flash-001", contents=messages,)
+    response = client.models.generate_content(
+        model="gemini-2.0-flash-001",
+        contents=messages,
+        config=types.GenerateContentConfig(system_instruction=system_prompt),)
 
     if verbose_mode:
         VerbosePrint(response, user_prompt)
