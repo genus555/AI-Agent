@@ -64,31 +64,43 @@ All paths you provide should be relative to the working directory. You do not ne
         types.Content(role="user", parts=[types.Part(text=user_prompt)])
     ]
 
-    response = client.models.generate_content(
-        model="gemini-2.0-flash-001",
-        contents=messages,
-        config=types.GenerateContentConfig(tools=[available_functions], system_instruction=system_prompt),)
+    #writing here
+    for i in range(20):
+        
+        response = client.models.generate_content(
+            model="gemini-2.0-flash-001",
+            contents=messages,
+            config=types.GenerateContentConfig(tools=[available_functions], system_instruction=system_prompt),)
 
-    if response.function_calls == []:
+        for candidate in response.candidates:
+            messages.append(candidate.content)
 
-        if verbose_mode:
-            VerbosePrint(response, user_prompt)
-        print(response.text)
+        if response.function_calls == None:
+
+            print('Final response:')
+            if verbose_mode:
+                VerbosePrint(response, user_prompt)
+            print(response.text)
+            break
     
-    else:
-        for function_call in response.function_calls:
-            try:
+        else:
+            for function_call in response.function_calls:
+                try:
                 
-                function_call_results = call_function(function_call)
-                
-                if verbose_mode:
-                    print(f"-> {function_call_results.parts[0].function_response.response}")
-                
-                else:
-                    print(function_call_results.parts[0].function_response.response['result'])
+                    function_call_results = call_function(function_call)
+                    messages.append(types.Content(role='tool', parts=function_call_results.parts))
 
-            except Exception as e:
-                print(f"Something went wrong: {e}")
+                    if verbose_mode:
+                        print(f"-> {function_call_results.parts[0].function_response.response}")
+                
+                    else:
+                        print(function_call_results.parts[0].function_response.response['result'])
+
+                except Exception as e:
+                    print(f"Something went wrong: {e}")
+
+    else:
+        print("Error: Program took too long. Terminated")
 
 if __name__ == "__main__":
     main()
